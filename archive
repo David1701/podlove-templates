@@ -1,0 +1,52 @@
+{#
+======================================================================================
+My archive site for my German Podcast Schwarmtaler - sorry for the missing translation
+--------------------------------------------------------------------------------------
+Das Template, das die Archivseite von schwarmtaler.de generiert. Es wird dabei eine
+Tabelle aufgespannt, die eine sortierte Liste aller Podcastfolgen inkl. Episodenname,
+Coverbild, allen Gästen, Link, Dauer und Veröffentlichungsdatum sowie Summary
+ausgegeben wird. Die Aufzählung der Gäste wird dabei vor dem letzten Gast mit einem
+'und' verbunden. Das sieht so schön aus.
+======================================================================================
+#}
+
+<table>
+{% for episode in podcast.episodes %}
+	<tr>
+    	<td style="padding-top:11px" valign="top">
+        	<img src="{{ episode.imageUrlWithFallback }}" width="150" height="150">
+        </td>
+        <td colspan="3">
+        <a href="{{ episode.url }}">
+                        {{ episode.title }}
+        </a>
+        <br>
+        {% if episode.contributors({role:"Guest"}) %}
+        	mit
+        {% endif %}
+        {% for contributor in episode.contributors({role:"Guest"}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td colspan="2" valign="bottom">
+        	<img src="http://www.schwarmtaler.de/media/ic/clock.png" /> {{ episode.duration }}
+        </td>
+        <td valign ="bottom">
+        	<img src="http://www.schwarmtaler.de/media/ic/calendar.png" /> {{ episode.publicationDate('d. m. Y') }}
+        </td>
+    </tr>
+    <tr>
+    	<td>
+        	
+        </td>
+		<td colspan="3">
+    		{{ episode.subtitle }}
+            <a href="{{ episode.url }}">
+            	Zur Episode >>
+            </a>
+        </td>
+    </tr>
+{% endfor %}
+</table>
