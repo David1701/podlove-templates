@@ -1,0 +1,47 @@
+{#
+=========================================================================================
+A guest list for a German Podcast - sorry for the missing translation.
+-----------------------------------------------------------------------------------------
+Die Gästeliste spannt eine Tabelle auf, in der alle Gäste eines Podcasts mit Namen,
+Avatar, Social Accounts und den Episoden, in der die entsprechende Person aufgetaucht ist.
+Darüber hinaus wird unterschieden, ob eine Person nur in einer oder mehreren Episoden
+aufgetaucht ist und passt die entsprechende Ausdrucksweise an. Sollte jemand in mehreren
+Episoden auftauchen, so wird die Aufzählung mit einem 'und' abgeschlossen. Was will man
+mehr?
+=========================================================================================
+#}
+
+{% for contributor in podcast.contributors({role:"Guest"})|sort %}
+	<table>
+    	<tr>
+        	<td rowspan="3" width="80" valign="top">
+            	<img src="{{ contributor.avatar.url }}" title="{{ contributor.name }}" width="75" />
+            </td>
+        	<td>
+				<strong>{{ contributor.name }}</strong>
+            </td>
+            </tr>
+            <tr>
+                <td>
+                    {% for service in contributor.services %}
+                      <a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+                        <img width="32" height="32" src="{{ service.logoUrl }}" class="podlove-contributor-button" alt="{{ service.title }}" />
+                      </a>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+            	<td>
+                	{% if contributor.episodes|length > 1 %}
+                        {{ contributor.name }} ist in folgenden Episoden zu hören:
+                        {% for episode in contributor.episodes|sort %}
+                        {% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}<a href="{{ episode.url }}">{{ episode.title }}</a>{% endfor %}.
+                    {% else %}
+                    	{{ contributor.name }} ist in der Episode
+                        {% for episode in contributor.episodes %}
+                            <a href="{{ episode.url }}">{{ episode.title }}</a>{% endfor %} zu hören.
+                    {% endif %}
+                </td>
+            </tr>
+    </table>
+{% endfor %}
