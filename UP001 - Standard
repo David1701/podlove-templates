@@ -1,0 +1,2 @@
+{{ episode.player }}
+{{ include ("Episode") }}
