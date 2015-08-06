@@ -1,0 +1,11 @@
+<table style="border-collapse: collapse;">
+<tbody>
+<tr>
+<td style="padding: 0;" rowspan="2" valign="top" width="150">{{ episode.image({fallback: true}).html({width: 150, heigth: 150, alt: episode.title }) }}</td>
+<td style="border-top: 1px solid black; border-bottom: 1px solid black; padding: 8px;">Dauer: {{ episode.duration }}</td>
+</tr>
+<tr>
+<td style="padding: 8px;" valign="top">{{ episode.summary }}</td>
+</tr>
+</tbody>
+</table>
