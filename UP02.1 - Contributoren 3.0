@@ -1,0 +1,93 @@
+{#
+Zusammenhängende Tabelle mit Flattr-Button
+#}
+<table>
+    {% if episode.contributors({role:"moderator"})|length > 0 %}
+        <tr>
+            <td colspan="4">
+                <h4>Moderation</h4>
+            </td>
+        </tr>
+            {% for contributor in episode.contributors({role:"moderator"}) %}
+                <tr>
+                    <td>
+                        {{ contributor.image.html({width: 50, heigth: 50, alt: contributor.name, title: contributor.name}) }}
+                    </td>
+                    <td>
+                        {{ contributor.name }}
+                    </td>
+                    <td>
+                        {% for service in contributor.services({category: "social"}) %}
+                            <a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+                                {{ service.image.html({width: 32, heigth: 32, alt: service.name}) }}
+                            </a>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for service in contributor.services({category: "donation"}) %}
+                            <a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+                                {{ service.image.html({width: 32, heigth: 32, alt: service.name}) }}
+                            </a>
+                        {% endfor %}
+                        {% if contributor.flattr %}
+    			            <br/>
+    			            <a target="_blank"
+    				            class="FlattrButton"
+    				            title="Flattr {{ contributor.name }}"
+    				            rel="flattr;uid:{{ contributor.flattr }};button:compact;popout:0"
+    				            href="{{ contributor.flattr_url }}">
+    					        Flattr {{ contributor.name }}
+    			            </a>
+    		            {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+    {% endif %}
+    {# --- Den nachfolgenden Abschnitt pro separat aufzuführender Rolle entsprechend duplizieren und in der Rolle anpassen --- #}
+    {% if episode.contributors({role:"guest"})|length > 0 %}
+        <tr>
+            <td colspan="4">
+                {% if episode.contributors({role:"guest"})|length == 1 %}
+                    <h4>Gast</h4>
+                {% else %}
+                    <h4>Gäste</h4>
+                {% endif %}
+            </td>
+        </tr>
+            {% for contributor in episode.contributors({role:"guest"}) %}
+                <tr>
+                    <td>
+                        {{ contributor.image.html({width: 50, heigth: 50, alt: contributor.name, title: contributor.name}) }}
+                    </td>
+                    <td>
+                        {{ contributor.name }}
+                    </td>
+                    <td>
+                        {% for service in contributor.services({category: "social"}) %}
+                            <a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+                                {{ service.image.html({width: 32, heigth: 32, alt: service.name}) }}
+                            </a>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for service in contributor.services({category: "donation"}) %}
+                            <a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+                                {{ service.image.html({width: 32, heigth: 32, alt: service.name}) }}
+                            </a>
+                        {% endfor %}
+                        {% if option.flattr == "yes" and contributor.flattr %}
+    			            <br/>
+    			            <a target="_blank"
+    				            class="FlattrButton"
+    				            title="Flattr {{ contributor.name }}"
+    				            rel="flattr;uid:{{ contributor.flattr }};button:compact;popout:0"
+    				            href="{{ contributor.flattr_url }}">
+    					        Flattr {{ contributor.name }}
+    			            </a>
+    		            {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+    {% endif %}
+    {# --- Ende des zu dupliziernden Abschnitts --- #}
+</table>
