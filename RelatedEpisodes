@@ -1,0 +1,24 @@
+{% if episode.relatedEpisodes|length  > 0 %}
+<table>
+    <tr>
+        <td colspan="2">
+            <h6>
+                Passende {{ podcast.title }}-Episoden zu dieser Folge
+            </h6>
+        </td>
+    </tr>
+    {% for episode in episode.relatedEpisodes %}
+        <tr>
+            <td valign="top">
+                <a href="{{ episode.url}}">
+                    {{ episode.image({fallback: true}).html({width:30}) }}
+                </a>
+            </td>
+            <td>
+                <a href="{{ episode.url}}">
+                    {{ episode.title }}
+                </a> mit 
+                {% for contributor in episode.contributors({role:"Guest"}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
