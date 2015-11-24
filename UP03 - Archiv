@@ -1,0 +1,53 @@
+{% import "dateranges"       as datecalc  %}
+
+{% set language = "de" %}
+
+<table>
+{% for episode in podcast.episodes %}
+    <div id="epi">
+	<tr>
+    	<td style="padding-top:11px" valign="top">
+    	    <a href="{{ episode.url }}">
+        	    {{ episode.image({fallback: true}).html({width: 150, heigth: 150, alt: episode.title }) }}
+        	</a>
+        </td>
+        <td colspan="3">
+        <a href="{{ episode.url }}">
+                        {{ episode.title }}
+        </a>
+        <br>
+        {% if episode.contributors({role:"Moderator"}) %}
+        	mit
+        {% endif %}
+        {% for contributor in episode.contributors({role:"Moderator"}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+        <br>
+        {% if episode.contributors({role:"Guest"}) %}
+        	zu Gast
+        {% endif %}
+        {% for contributor in episode.contributors({role:"Guest"}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td colspan="2" valign="bottom">
+        	<img src="http://www.schwarmtaler.de/media/ic/clock.png" /> {{ episode.duration }}
+        </td>
+        <td valign ="bottom">
+        	<img src="http://www.schwarmtaler.de/media/ic/calendar.png" /> {{ datecalc.daterange(episode.publicationDate.format('Y-m-d'), language) }}
+        </td>
+    </tr>
+    <tr>
+    	<td>
+        	
+        </td>
+		<td colspan="3">
+    		{{ episode.subtitle }}
+            <a href="{{ episode.url }}">
+            	Zur Episode >>
+            </a>
+        </td>
+    </tr>
+    </div>
+{% endfor %}
+</table>
