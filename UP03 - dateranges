@@ -1,0 +1,57 @@
+{# Template: dateranges #}
+{# for Podlove templates #}
+{# Version: 1.0 #}
+
+
+{% macro translate(term, language) %}
+	{% set localization_table =
+	    {
+	        "minute":   { en: "minute",     de: "Minute"    },
+	        "minutes":  { en: "minutes",    de: "Minuten"   },
+	        "hour":     { en: "hour",       de: "Stunde"    },
+	        "hours":    { en: "hours",      de: "Stunden"   },
+	        "day":      { en: "day",        de: "Tag"       },
+	        "days":     { en: "days",       de: "Tage"      },
+	        "daysn":    { en: "days",       de: "Tagen"     },
+	        "week":     { en: "week",       de: "Woche"     },
+	        "weeks":    { en: "weeks",      de: "Wochen"    },
+	        "month":    { en: "month",      de: "Monat"     },
+	        "months":   { en: "months",     de: "Monate"    },
+	        "monthsn":  { en: "months",     de: "Monaten"   },
+	        "year":     { en: "year",       de: "Jahr"      },
+	        "years":    { en: "years",      de: "Jahre"     },
+	        "yearsn":   { en: "years",      de: "Jahren"    },
+	        "today":    { en: "today",      de: "heute"     },
+	        "yesterday":{ en: "yesterday",  de: "gestern"   },
+	        "1m":       { en: "a",          de: "ein"       },
+	        "1f":       { en: "a",          de: "eine"      },
+	        "agopre":   { en: "",           de: "vor"       },
+	        "agosuf":   { en: "ago",        de: ""          }
+	    }
+	%}
+	{% if not language %}
+		{% set language = 'en' %}
+	{% endif %}
+	{{ localization_table [term][language] }}
+{% endmacro %}
+
+{% macro daterange(pubDate, language) %}
+    {% import _self as datecalc %}
+  
+    {% set difference = date(pubDate).diff(date(today)) %}
+    {% set diffDays = difference.days %}
+    {% if diffDays == 0 %}
+        {{ datecalc.translate("today",language) }}
+    {% elseif diffDays == 1 %}
+        {{ datecalc.translate("yesterday",language) }}
+    {% elseif diffDays >1 and diffDays < 14 %}
+        {{ datecalc.translate("agopre", language) }} {{ diffDays }} {{ datecalc.translate("daysn", language) }} {{ datecalc.translate("agosuf", language) }}
+    {% elseif diffDays >13 and diffDays < 60 %}
+        {{ datecalc.translate("agopre", language) }} {{ diffDays//7 }} {{ datecalc.translate("weeksn", language) }}  {{ datecalc.translate("agosuf", language) }}
+    {% elseif diffDays >59 and diffDays < 500 %}
+        {{ datecalc.translate("agopre", language) }} {{ diffDays//30 }} {{ datecalc.translate("monthsn", language) }}  {{ datecalc.translate("agosuf", language) }}
+    {% elseif diffDays >499 %}
+        {{ datecalc.translate("agopre", language) }} {{ diffDays//365 }} {{ datecalc.translate("yearsn", language) }}  {{ datecalc.translate("agosuf", language) }}
+
+    {% endif %}
+{% endmacro %}
