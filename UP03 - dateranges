@@ -47,7 +47,7 @@
     {% elseif diffDays >1 and diffDays < 14 %}
         {{ datecalc.translate("agopre", language) }} {{ diffDays }} {{ datecalc.translate("daysn", language) }} {{ datecalc.translate("agosuf", language) }}
     {% elseif diffDays >13 and diffDays < 60 %}
-        {{ datecalc.translate("agopre", language) }} {{ diffDays//7 }} {{ datecalc.translate("weeksn", language) }}  {{ datecalc.translate("agosuf", language) }}
+        {{ datecalc.translate("agopre", language) }} {{ diffDays//7 }} {{ datecalc.translate("weeks", language) }}  {{ datecalc.translate("agosuf", language) }}
     {% elseif diffDays >59 and diffDays < 500 %}
         {{ datecalc.translate("agopre", language) }} {{ diffDays//30 }} {{ datecalc.translate("monthsn", language) }}  {{ datecalc.translate("agosuf", language) }}
     {% elseif diffDays >499 %}
