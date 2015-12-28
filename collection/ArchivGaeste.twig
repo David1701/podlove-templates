@@ -1,0 +1,53 @@
+{#
+Eine Archivseite, die statt der Episodenbilder - falls es sie gibt - das Avatarbild des ersten Gastes anzeigt.
+#}
+
+{% set icon_size = 50 %}
+<table style="border-collapse: collapse; border: hidden">
+{% for episode in podcast.episodes %}
+	<tr style="border: hidden">
+    	<td style="padding-top:11px; valign:top; width:75px; rowspan:3">
+            {% if episode.contributors({role: "Guest"})|length > 0 %}
+                {% for contributor in episode.contributors({role: "Guest"}) %}
+                    {% if loop.first %}
+                        <img src="{{ contributor.image.url }}" style="width: 75; alt: contributor.name; title: contributor.name; border-radius: 8px"/>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {{ episode.image({fallback: true}).html({width: 75, heigth: 75, alt: episode.title, title: episode.title }) }}
+            {% endif %}
+        </td>
+        <td colspan="3" valign="top">
+        <a href="{{ episode.url }}">
+                        {{ episode.title }}
+        </a>
+        <br>
+        {% if episode.contributors({role:"Guest"}) %}
+        	mit
+        {% endif %}
+        {% for contributor in episode.contributors({role:"Guest"}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+        </td>
+    </tr>
+    <tr style="border: hidden">
+        <td>
+        </td>
+        <td colspan="2" valign="middle">
+        	<img src="http://www.schwarmtaler.de/media/ic/clock.png" height="16px" width="16px" /> {{ episode.duration }}
+        </td>
+        <td valign ="middle">
+        	<img src="http://www.schwarmtaler.de/media/ic/calendar.png" height="16px" width="16px" /> {{ episode.publicationDate.format('F Y') }}
+        </td>
+    </tr>
+    <tr>
+    	<td>
+        	
+        </td>
+		<td colspan="3">
+    		{{ episode.subtitle }}
+            <a href="{{ episode.url }}">
+            	Zur Episode >>
+            </a>
+        </td>
+    </tr>
+{% endfor %}
+</table>
