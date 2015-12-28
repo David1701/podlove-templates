@@ -1,0 +1,167 @@
+{#
+Template für die Präsentation einer Episode - beispielsweise auf der Startseite. Es bedarf des Templates 'metaebene-marcos'
+zu finden unter https://github.com/timpritlove/podlove-templates/blob/master/metaebene-macros.twig. Das Template basiert auf
+Tim Pritloves Template https://github.com/timpritlove/podlove-templates/blob/master/overview-page.twig und enthält folgende Änderungen:
+
+- abgerundete Kontributorenbilder
+- kleine Vorstellungsboxen eines oder mehrerer Gäste
+- schickes "und" bei der Auflistung von Gästen
+- zu den vorherigen Episoden wird statt des Episodencovers der Avatar des ersten Gastes angezeigt
+
+#}
+
+{% import "metaebene-macros" as metaebene %}
+
+{% if not avatar_size %}
+  {% set avatar_size = '128' %}
+{% endif %}
+
+{% if not icon_size %}
+  {% set icon_size = '96' %}
+{% endif %}
+
+{% if not role %}
+  {% set role = 'guest' %}
+{% endif %}
+
+<div class="episode-overview">
+{% set episode_count = 0 %}
+{% set language = de %}
+{% for episode in podcast.episodes %}
+    {% set episode_count = episode_count + 1 %}
+    {% if episode_count == 1 %}
+		{# Featured Episode #}
+
+		{% set guestcount = episode.contributors({role:"Guest"})|length %}
+        <div class="featured-episode">
+        	<h6>Aktuelle Episode vom {{ metaebene.print_date_without_icon(episode.publicationDate, language) }}</h6>
+            <h1 class="entry-title"><a title="{{ episode.title }}" href="{{ episode.url }}">{{ episode.title }}</a></h1>
+            {% if episode.contributors({role:"Guest"}) %}
+        	<h6>Zu Gast:
+        {% endif %}
+        {% for contributor in episode.contributors({role:"Guest"}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+        {% if episode.contributors({role:"Guest"}) %}
+        	</h6>
+        {% endif %}
+
+            {{ episode.player }}
+            <p class="episode-summary" style="text-align:justify">
+                {% if episode.contributors({role:"Guest"})|length > 0 %}
+                    <table style="float: right; background-color: #dddddd; border-collapse: collapse; border-style: hidden; width:200px; margin:16px">
+                        <tr>
+                            {% for contributor in episode.contributors({role:"Guest"})|sort %}
+                                <td style="width:200px; padding:4px">
+                                    <img src="{{ contributor.image.url }}" style="width: 200; alt: contributor.name; title: contributor.name; border-radius: 10px"/>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for contributor in episode.contributors({role:"Guest"})|sort %}
+                                <td style="padding:4px">
+                                    <i>{{ contributor.comment }}</i>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </table>
+                {% endif %}
+                {{ episode.summary }}
+            </p>
+            <p>Moderation: 
+                {% for contributor in episode.contributors({role:"Moderator"}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+            </p>
+			<div class="episode-footer">
+			    <a href="{{ episode.url }}">Zur Sendungsseite ></a>
+            </div>
+		</div>
+    {% endif %}
+{% endfor %}
+
+{% if episode_count > 1 %}
+	<h4>Zuvor im {{ podcast.title }}-Podcast</h4>
+    <div class="recent-episodes">
+		<table>
+    		{% set episode_count = 0 %}
+    		{% set recent_episodes = 5 %}
+
+    		<tbody>
+    		    {% for episode in podcast.episodes %}
+    			    {% set episode_count = episode_count + 1 %}
+    			    {% set recent_episodes = recent_episodes - 1 %}
+    			    {% if recent_episodes > 0 and episode_count > 1 %}
+    			        <tr id="{{ episode.slug }}" class="archive_episode_row" style="background-color: #eee; padding: 12px">
+    			            <td class="episode_icon" style="padding-left: 5px; padding-right: 5px; vertical-align: top">
+    			                <a href="{{ episode.url }}">
+    			                    {% if episode.contributors({role: "Guest"})|length > 0 %}
+    			                        {% for contributor in episode.contributors({role: "Guest"}) %}
+    			                            {% if loop.first %}
+    			                                <img src="{{ contributor.image.url }}" style="width: 75; alt: contributor.name; title: contributor.name; border-radius: 8px"/>
+    			                            {% endif %}
+			                            {% endfor %}
+    			                    {% else %}
+    			                        {{ episode.image({fallback: true}).html({width: 75, heigth: 75, alt: episode.title, title: episode.title }) }}
+    			                    {% endif %}
+    			                </a>
+    			            </td>
+    			            <td class="episode-description">
+                                <div class="recent-episode-contributors">
+                                	<a href="{{ episode.url }}">{{ episode.title }}</a><br/>
+                                    {% if episode.contributors|length > 1 %}mit {% endif %}
+					                {% for contributor in episode.contributors({group: group, role: role}) %}{% if episode.contributors|length > 1 %}{% if not loop.first %}{% if loop.last %} und {% elseif not loop.last %}, {% endif %}{% endif%}{% endif %}{{ contributor.name }}{% endfor %}
+                                </div>
+                                <div class="recent-episode-subtitle" style="padding-right: 6px; padding-left: 6px">
+                                	{{ episode.subtitle }}</div>
+    			                <div class="episode_meta" style="padding-right: 6px; padding-left: 6px">
+    			                    {{ metaebene.print_date(episode.publicationDate, language) }} {{ metaebene.print_duration(episode.duration, language) }}
+    			                </div>
+    			            </td>
+    			        </tr>
+    				{% endif %}
+    			{% endfor %}
+                {% if episode_count > 3 %}
+                	<tr>
+                    	<td>
+                        </td>
+                        <td>
+							Weitere Sendungen im <a href="http://stadtgestalten-podcast.de/archiv/">Archiv</a>
+                    	</td>
+                    </tr>
+				{% endif %}
+    	    </tbody>
+		</table>
+    </div>
+{% endif %}
+
+</div>
+
+<style>
+div.featured-episode {
+	background-color: #eee;
+    padding: 12px;
+
+	margin-bottom: 24px;
+}
+
+div.episode-summary {
+    text-align: justify;
+}
+
+div.podlovewebplayer_wrapper {
+	margin-bottom: 24px;
+}
+
+div.episode-contributors {
+	float: right;
+	margin-left: 10px;
+}
+
+div.recent-episode-contributors {
+	font-weight: bold;
+    background-color: #ddd;
+    padding-right: 6px;
+    padding-left: 6px;
+}
+
+div.episode-footer {
+	clear: right;
+}
+</style>
