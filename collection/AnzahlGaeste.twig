@@ -1,0 +1,5 @@
+{% if podcast.contributors({role: "Guest"})|length  == 1 %}
+    <p>Bei {{ podcast.title }} wurde bislang ein Gast begrüßt.</p>
+{% else %}
+    <p>Bei {{ podcast.title }} wurden bislang {{ podcast.contributors({role: "Guest"})|length }} Gäste begrüßt.</p>
+{% endif %}
